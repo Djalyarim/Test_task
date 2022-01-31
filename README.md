@@ -29,7 +29,9 @@ docker-compose build && docker-compose up -d && docker-compose logs -f
 ```
 curl -X GET http://127.0.0.1:8001/run-import-task/ 
 ```
-### Если сервис service_api сгенерировал вес с нечетной целой частью, то вес сохраняется в postgres
+Если сервис service_api сгенерировал вес с нечетной целой частью, то вес сохраняется в postgres
+Для удобства проверки service_api генерирует пользователей с id от 1 до 10.
+
 
 
 
