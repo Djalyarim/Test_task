@@ -7,13 +7,13 @@
 # Тестовое задание
 
 
-Убедитесь что у вас установлен Docker, если нет установите:
+Убедитесь что у вас установлен Docker, если нет - установите:
 ```
 https://www.docker.com/products/personal
 ```
 
 ## Подготовка и запуск проекта
-### Склонировать репозиторий на локальную машину:
+### Склонируйте репозиторий на локальную машину:
 ```
 git clone https://github.com/Djalyarim/Test_task.git
 ```
@@ -30,10 +30,7 @@ docker-compose build && docker-compose up -d && docker-compose logs -f
 curl -X GET http://127.0.0.1:8001/run-import-task/ 
 ```
 ### Если сервис service_api сгенерировал вес с нечетной целой частью, то вес сохраняется в postgres
-### Посмотреть базу postgres вы можете по адресу:
-```
-curl -X GET http://127.0.0.1:8001/run-import-task/ 
-```
+
 
 
 
