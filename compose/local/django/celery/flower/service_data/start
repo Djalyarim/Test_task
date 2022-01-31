@@ -1,0 +1,22 @@
+#!/bin/bash
+
+set -o errexit
+set -o nounset
+
+cd service_data/ 
+
+worker_ready() {
+    
+    celery -A service_data inspect ping
+}
+
+until worker_ready; do
+  >&2 echo 'Celery workers not available'
+  sleep 1
+done
+>&2 echo 'Celery workers is available'
+
+celery -A service_data  \
+    --broker="${CELERY_BROKER}" \
+    flower
+  

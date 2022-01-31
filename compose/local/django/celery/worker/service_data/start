@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -o errexit
+set -o nounset
+
+cd service_data/ 
+
+celery -A service_data worker -l INFO -Q queue_service_data

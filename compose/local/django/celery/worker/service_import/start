@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -o errexit
+set -o nounset
+
+cd service_import/ 
+
+celery -A service_import worker -l INFO -Q queue_service_import

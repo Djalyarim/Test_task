@@ -1,0 +1,135 @@
+version: '3.8'
+
+services:
+  serice_api:
+    build:
+      context: .
+      dockerfile: ./service_api/Dockerfile
+    image: welltory_service_api
+    container_name: service_api
+    ports:
+      - '8000:8000'
+    env_file:
+      - ./service_api/.env
+    depends_on:
+      - redis
+      - db
+    networks:
+      default:
+        aliases:
+          - my-service-api
+
+  service_import:
+    build:
+      context: .
+      dockerfile: ./service_import/Dockerfile
+    image: welltory_service_import
+    container_name: service_import
+
+    volumes:
+      - .:/app
+    ports:
+      - '8001:8001'
+    env_file:
+      - ./service_import/.env
+    depends_on:
+      - redis
+      - db
+  
+  service_data:
+    build:
+      context: .
+      dockerfile: ./compose/local/django/Dockerfile
+    image: welltory_service_data
+    container_name: service_data
+    command: /start
+    ports:
+      - '8002:8002'
+    env_file:
+      - ./service_data/.env
+    depends_on:
+      - redis
+      - db
+    networks:
+      default:
+        aliases:
+          - my-service-api-data
+
+  db:
+    image: postgres:14-alpine
+    container_name: postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+      - ./service_data/schema_design/db_schema.sql:/docker-entrypoint-initdb.d/db_schema.sql
+    env_file:
+      - ./service_data/.env
+    networks:
+      default:
+        aliases:
+          - my-postgres
+
+  redis:
+    image: redis:6-alpine
+    container_name: redis
+    ports:
+      - '6379:6379'
+
+  celery_worker:
+    build:
+      context: .
+      dockerfile: ./service_import/Dockerfile
+    hostname: worker
+    image: welltory_celery_worker_1
+    container_name: celery_worker_1
+    command: /start-celeryworker
+    volumes:
+      - .:/app
+    env_file:
+      - ./service_import/.env
+    depends_on:
+      - redis
+      - db
+
+  celery_worker_2:
+    build:
+      context: .
+      dockerfile: ./compose/local/django/Dockerfile
+    hostname: worker_2
+    image: welltory_celery_worker_2
+    container_name: celery_worker_2
+    command: /start-celeryworker
+    volumes:
+      - .:/app
+    env_file:
+      - ./service_data/.env
+    depends_on:
+      - redis
+      - db
+
+  flower:
+    build:
+      context: .
+      dockerfile: ./service_import/Dockerfile
+    image: welltory_celery_flower
+    container_name: celery_flower
+    command: /start-flower
+    volumes:
+      - .:/app
+    env_file:
+      - ./service_import/.env
+    ports:
+      - 5557:5555
+    depends_on:
+      - redis
+      - db
+
+  pgadmin:
+    image: chorss/docker-pgadmin4
+    container_name: pgadmin
+    ports:
+      - 5050:80
+
+volumes:
+  postgres_data:
