@@ -7,86 +7,33 @@
 # Тестовое задание
 
 
-Foodgram - сервис для публикации рецептов. Авторизованные пользователи могут подписываться авторов, добавлять рецепты в избранное, в покупки, скачивать списки ингредиентов из рецептов для покупок.
-Неавторизованным пользователям доступна регистрация, авторизация, просмотр рецептов других авторов.
+Убедитесь что у вас установлен Docker, если нет установите:
+```
+https://www.docker.com/products/personal
+```
 
 ## Подготовка и запуск проекта
 ### Склонировать репозиторий на локальную машину:
 ```
-git clone https://github.com/Djalyarim/foodgram-project-react
+git clone https://github.com/Djalyarim/Test_task.git
 ```
-## Для работы с удаленным сервером (на ubuntu):
-### Выполните вход на свой удаленный сервер
+### Локально переименуйте файлы .env.template в директориях service_api, service_import, service_data в .env
 
-### Установите docker на сервер:
+### В первом теримнале из корневой директории запустите команду на сбор и запуск контейнеров:
 ```
-sudo apt install docker.io 
+docker-compose build && docker-compose up -d && docker-compose logs -f
 ```
-### Установите docker-compose на сервер:
+### Подождите запуска всех контейнеров
+
+### Во втором терминале несколько раз запустите команду:
 ```
-sudo apt install docker-compose
+curl -X GET http://127.0.0.1:8001/run-import-task/ 
 ```
-### Локально отредактируйте файл infra/nginx.conf и в строке server_name впишите свой IP
-### Скопируйте файлы docker-compose.yml и nginx.conf из директории infra на сервер:
+### Если сервис service_api сгенерировал вес с нечетной целой частью, то вес сохраняется в postgres
+### Посмотреть базу postgres вы можете по адресу:
 ```
-scp docker-compose.yml <username>@<host>:/home/<username>/docker-compose.yml
-scp nginx.conf <username>@<host>:/home/<username>/nginx/nginx.conf
-```
-### На сервере создайте файл .env (touch .env) и заполните переменные окружения (или создайте этот файл локально и скопируйте файл по аналогии с предыдущим пунктом):
+curl -X GET http://127.0.0.1:8001/run-import-task/ 
 ```
 
-DB_ENGINE=django.db.backends.postgresql
-DB_NAME=postgres
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
-DB_HOST=db
-DB_PORT=5432
 
-```
-### На сервере соберите docker-compose:
-```
-sudo docker-compose up -d --build
-```
-### После успешной сборки на сервере выполните команды (только после первого деплоя):
-#### Применитe миграции:
-```
-sudo docker-compose exec backend python manage.py makemigrations
-sudo docker-compose exec backend python manage.py migrate --noinput
-```
-#### Соберите статические файлы:
-```
-sudo docker-compose exec backend python manage.py collectstatic --noinput
-```
-#### Загрузите ингридиенты в базу данных (не обязательно)
-```
-sudo docker-compose exec backend python manage.py loaddata fixtures/ingredients.json
-```
-#### Создайте суперпользователя Django:
-```
-sudo docker-compose exec backend python manage.py createsuperuser
-```
-### Проект будет доступен по вашему IP
-### Для работы с Workflow добавьте в Secrets GitHub переменные окружения для работы:
-```
-DOCKER_PASSWORD=<пароль от DockerHub>
-DOCKER_USERNAME=<имя пользователя>
-
-USER=<username для подключения к серверу>
-HOST=<IP сервера>
-PASSPHRASE=<пароль для сервера, если он установлен>
-SSH_KEY=<ваш SSH ключ (для получения команда: cat ~/.ssh/id_rsa)>
-
-TG_CHAT_ID=<ID чата, в который придет сообщение>
-TELEGRAM_TOKEN=<токен вашего бота>
-```
-## Workflow состоит из трёх шагов:
-- Сборка и публикация образа бекенда на DockerHub.
-- Автоматический деплой на удаленный сервер.
-- Отправка уведомления в телеграм-чат.
-## Для ревью проект будет доступен по адресу http://62.84.120.68/
-### Вход на сайт/в админку:
-```
-mikhail@reviewer.ru
-qwertyui
-```
 
