@@ -15,6 +15,8 @@ class UserList(generics.ListAPIView):
     serializer_class = UserWeightSerializer
     filter_backends = [DjangoFilterBackend, ]
     filterset_fields = ['user_id', ]
+    ordering_fields = ['day', ]
+    ordering = ['day', ]
 
 
 @api_view(['POST'])
