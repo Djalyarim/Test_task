@@ -57,8 +57,9 @@ http://127.0.0.1:8000/external-fake-api/
 
 ### Service_data - просмотр данных из postgres с фильтром по user_id и сортировкой по дню
 ```
-http://127.0.0.1:8002/view-data-api/?user_id=
+http://127.0.0.1:8002/view-data-api/
 ```
+
 
 
 
